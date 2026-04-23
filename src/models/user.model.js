@@ -13,7 +13,7 @@ const userSchema = new Schema({
         index: true
     },
     email: {
-        type: string,
+        type: String,
         required: true,
         unique: true,
         lowercase: true,
@@ -22,20 +22,20 @@ const userSchema = new Schema({
     },
 
     fullName: {
-        type: string,
+        type: String,
         required: true,
         trim: true
 
     },
 
     avatar: {
-        type: string,
+        type: String,
         required: true,
 
     },
 
     coverImage: {
-        type: string,
+        type: String,
         required: true,
 
     },
@@ -61,39 +61,37 @@ const userSchema = new Schema({
     }
 );
 
-userSchema.pre("save", async function (next) {
-    if (this.modified("password")) return next();
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
     this.password = await bcrypt.hash(this.password, 10);
-    next();
+
 });
 
-userSchema.methods.matchPassword = async function (next) {
+userSchema.methods.matchPassword = async function (password) {
     return await bcrypt.compare(password, this.password);
 }
 
-userSchema.methods.generateAccess = async function () {
-    const rawPrivateKey = await fs.readFile("./src/keys/private.pem");
-    const privateKeyCrypt = importPKCS8(rawPrivateKey, "edDSA");
-    const accessToken = await new SignJWT({ id: this._id })
-        .setProtectedHeader({ alg: "edDSA" })
-        .setIssuedAt(Date.now())
+userSchema.methods.generateAccessToken = async function (userID) {
+    const rawPrivateKey = await fs.readFile("./src/keys/private.pem", "utf-8");
+    const privateKeyCrypt = await importPKCS8(rawPrivateKey, "EdDSA");
+    const accessToken = await new SignJWT({ id: userID.toString() })
+        .setProtectedHeader({ alg: "EdDSA" })
+        .setIssuedAt(Date.now()/1000)
         .setExpirationTime(process.env.ACC_TOKEN_EXP)
-    sign(privateKeyCrypt);
-    console.log(token, "\n");
+        .sign(privateKeyCrypt);
     return accessToken;
 }
 
 
 
-userSchema.methods.generateRefreshToken = async function () {
-    const rawPrivateKey = await fs.readFile("./src/keys/private.pem");
-    const privateKeyCrypt = importPKCS8(rawPrivateKey, "edDSA");
-    const refreshToken = await new SignJWT({ id: this._id })
-        .setProtectedHeader({ alg: "edDSA" })
-        .setIssuedAt(Date.now())
+userSchema.methods.generateRefreshToken = async function (userID) {
+    const rawPrivateKey = await fs.readFile("./src/keys/private.pem", "utf-8");
+    const privateKeyCrypt = await importPKCS8(rawPrivateKey, "EdDSA");
+    const refreshToken = await new SignJWT({ id: userID.toString() })
+        .setProtectedHeader({ alg: "EdDSA" })
+        .setIssuedAt(Date.now()/1000)
         .setExpirationTime(process.env.REF_TOKEN_EXP)
-    sign(privateKeyCrypt);
-    console.log(token, "\n");
+        .sign(privateKeyCrypt);
     return refreshToken;
 }
 

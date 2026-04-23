@@ -6,7 +6,8 @@ const storage = multer.diskStorage({
         cb(null, "./uploads")
     },
     filename: function (req, file, cb) {
-        const newFileName = crypto.randomUUID();
+        const ext = file.mimetype.split("/")[1];
+        const newFileName = crypto.randomUUID() + "." + ext;
         cb(null, newFileName)
     }
 })
