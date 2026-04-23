@@ -201,12 +201,124 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 
 const getUserChannelData = asyncHandler(async (req, res) => {
     const { username } = req.params;
+    if (!username) {
+        return res.status(404).json({ alert: "username is required!" });
+    }
+
+    const UserChannelInfo = User.aggregate([
+
+        {
+            $match: {
+                username: username?.toLowerCase()
+            }
+        },
+        {
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "channel",
+                as: "subscribers"
+            }
+        },
+        {
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "subscriber",
+                as: "subscription"
+
+            }
+        },
+        {
+            $addFields: {
+                subscribersCount: {
+                    $size: "$subscribers"
+                },
+                subscriptionsCount: {
+                    $size: "subscription"
+                },
+                isSubscribed: {
+                    $cond: {
+                        if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+                        then: true,
+                        else: false
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                fullName: 1,
+                username: 1,
+                avatar: 1,
+                subscribersCount: 1,
+                subscriptionsCount: 1,
+                isSubscribed: 1,
+                coverImage: 1,
+                email: 1
+            }
+        }
+    ]);
+
+    if (!UserChannelInfo) {
+        return res.status(404).json({ alert: "Channel data not found!" });
+    }
+
+    return res.status(200).json({ message: "Channel fetched successfully!" });
 
 });
 
 const getUserWatchTimeData = asyncHandler(async (req, res) => {
+    const user = await User.aggregate([
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(req.user?._id)
+            }
+        },
+        {
+            $lookup: {
+                from: "videos",
+                localField: "watchHistory",
+                foreignField: "_id",
+                as: "watchHistory",
+                pipeline: [
+                    {
+                        $lookup: {
+                            from: "users",
+                            localField: "owner",
+                            foreignField: "_id",
+                            as: "owner",
+                            pipeline: [
+                                {
+                                    $project: {
+                                        fullName: 1,
+                                        username: 1,
+                                        avatar: 1
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        $addFields: {
+                            owner: {
+                                $first: "$owner"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
 
+    ]);
+    if (!user) {
+        return res.status(404).json({ alert: "watch history not available!" });
+    }
+
+    return res.status(200)
+        .json({ message: "Watch history fetched successfully!", watchHistory: user[0]?.watchHistory })
 });
+
 
 export {
     regUser,
