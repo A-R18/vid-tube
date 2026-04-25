@@ -16,14 +16,18 @@ const getAllVideos = asyncHandler(async (req, res) => {
   if (!allVideosFetched) {
     return res.status(404).json({ alert: "video(s) not found!" });
   }
-  return res.status(200).json({message: "videos fetched successfully!", videos: allVideosFetched});
+  return res.status(200).json({ message: "videos fetched successfully!", videos: allVideosFetched });
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {
   const { vid_title, desc } = req.body;
   // TODO: get video, upload to cloudinary, create video
-  const thumbnailFileName = req.files?.thumbnail[0]?.path;
-  const videoFileName = req.files?.video[0]?.path;
+    console.log(req.files);
+  if (!req?.files?.thumbnail || !req?.files?.video) {
+    return res.status(403).json({ message: "File and video both are required!" });
+  }
+  const thumbnailFileName = req?.files?.thumbnail[0]?.path;
+  const videoFileName = req?.files?.video[0]?.path;
   if (!thumbnailFileName || !videoFileName) {
     return res.status(404).json({ alert: "please specify thumbnail & video!" });
   }
@@ -33,8 +37,8 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
   if (!videoUploaded || !thumbnailUploaded) {
     await Promise.all([
-      deleteFromCloudnary(videoUploaded.url, "video"),
-      deleteFromCloudnary(thumbnailUploaded.url, "image")]);
+      deleteFromCloudnary(videoUploaded.video_public_id, "video"),
+      deleteFromCloudnary(thumbnailUploaded.thumbnail_public_id, "image")]);
     return res.status(400).json({ alert: "Couldn't upload! video & its thumbnail" });
   }
 
