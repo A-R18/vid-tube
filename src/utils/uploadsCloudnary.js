@@ -25,9 +25,16 @@ const uploadOnCloudnary = async (localFilePath) => {
   }
 };
 
-const deleteFromCloudnary = async (publicID) => {
+const deleteFromCloudnary = async (publicID, resourceType) => {
   try {
-    await cloudinary.uploader.destroy(uploadID);
+    cloudinary.config({
+      cloud_name: process.env.CLOUDNARY_NAME,
+      api_key: process.env.CLOUDNARY_API_KEY,
+      api_secret: process.env.CLOUDNARY_API_SECRET,
+    });
+    await cloudinary.uploader.destroy(publicID, {
+      resource_type: resourceType, invalidate:true
+    });
     console.log("Deleted from cloudinary, via public id ");
   } catch (error) {
     console.log("Error deleteing from cloudnary \n", error);
