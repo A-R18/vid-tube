@@ -9,12 +9,13 @@ import userRoutes from "../src/routes/user.route.js";
 import videoRoutes from "../src/routes/video.route.js";
 import tweetRoutes from "../src/routes/tweet.route.js";
 import commentRoutes from "../src/routes/comment.route.js";
-
-app.use("/application", healthRoute);
+import subscriptionRoutes from "../src/routes/subscription.route.js";
 app.use("/app/users", userRoutes);
 app.use("/app/video", videoRoutes);
 app.use("/app/tweet", tweetRoutes);
+app.use("/application", healthRoute);
 app.use("/app/comments", commentRoutes);
+app.use("/app/subscription", subscriptionRoutes);
 
 app.listen(port, () => {
   connectDataBase();
