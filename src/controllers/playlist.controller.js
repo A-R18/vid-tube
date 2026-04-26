@@ -27,7 +27,7 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
   if (!userPlayListsFetched) {
     return res.status(400).json({ alert: "Couldn't fetch playlist(s)" });
   }
-  return res.status(200).json({ message: "Playlist(s) fetched successfully" });
+  return res.status(200).json({ message: "Playlist(s) fetched successfully", playlists: userPlayListsFetched });
   //TODO: get user playlists
 });
 
