@@ -2,15 +2,15 @@ import mongoose, { Schema } from "mongoose";
 
 const playListSchema = new Schema(
   {
-    name: {
+    playList_name: {
       type: String,
       required: true,
     },
-    description: {
+    playList_description: {
       type: String,
       required: true,
     },
-    videos: [
+    playList_videos: [
       {
         type: Schema.Types.ObjectId,
         ref: "Video",

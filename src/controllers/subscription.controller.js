@@ -52,9 +52,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 
 // controller to return channel list to which user has subscribed
 const getSubscribedChannels = asyncHandler(async (req, res) => {
-   if (!subscriberId) {
-    return res.status(400).json({ alert: "Channel details are required!" });
-  }
+   
   const subscriptionsFetched = await Subscription.find({ subscriber: req.user._id });
   if (!subscriptionsFetched) {
     return res.status(400).json({ alert: "Couldn't fetch subscriptions!" });

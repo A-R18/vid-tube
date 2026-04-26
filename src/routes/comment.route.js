@@ -11,6 +11,6 @@ const router = Router();
 router.route("/add-comment").post(authorizeUser, addComment);
 router.route("/edit-comment").post(authorizeUser, updateComment);
 router.route("/delete-comment").post(authorizeUser, deleteComment);
-router.route("/video-comments").get(authorizeUser, getVideoComments);
+router.route("/video-comments/:videoId").get(authorizeUser, getVideoComments);
 
 export default router;

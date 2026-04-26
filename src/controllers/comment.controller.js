@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Comment } from "../models/comment.model.js";
+import { Comment } from "../models/comment.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -41,7 +41,7 @@ const updateComment = asyncHandler(async (req, res) => {
   if (!comment || !commentId) {
     return res.status(404).json({ alert: "Please provide comment data" });
   }
-  const commentUpdated = await Comment.findAndUpdate(
+  const commentUpdated = await Comment.findOneAndUpdate(
     { _id: commentId, owner: req.user._id },
     { $set: { content: comment } },
     { new: true });
@@ -59,7 +59,7 @@ const deleteComment = asyncHandler(async (req, res) => {
   if (!commentId) {
     return res.status(400).json({ alert: "Please provide reference of comment!" })
   }
-  const commentDeleted = await Comment.findAndDelete(
+  const commentDeleted = await Comment.findOneAndDelete(
     { _id: commentId, owner: req.user._id });
   if (!commentDeleted) {
     return res.status(400).json({ alert: "Couldn't delete comment!" });
