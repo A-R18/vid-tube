@@ -11,6 +11,6 @@ import {
 router.route("/toggle-video").post(authorizeUser, toggleVideoLike);
 router.route("/toggle-comment").post(authorizeUser, toggleCommentLike);
 router.route("/toggle-tweet").post(authorizeUser, toggleTweetLike);
-router.route("/my-liked-videos").post(authorizeUser, getLikedVideos);
+router.route("/my-liked-videos").get(authorizeUser, getLikedVideos);
 
 export default router;
