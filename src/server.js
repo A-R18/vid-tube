@@ -11,6 +11,8 @@ import tweetRoutes from "../src/routes/tweet.route.js";
 import commentRoutes from "../src/routes/comment.route.js";
 import subscriptionRoutes from "../src/routes/subscription.route.js";
 import playlistRoutes from "../src/routes/playlist.route.js";
+import likeRoutes from "../src/routes/like.route.js";
+app.use("/app/like", likeRoutes);
 app.use("/app/users", userRoutes);
 app.use("/app/video", videoRoutes);
 app.use("/app/tweet", tweetRoutes);

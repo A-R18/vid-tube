@@ -1,6 +1,16 @@
 import { Router } from "express";
-import { authorizeUser } from "../middleware/authorize.mid.js";
-
 const router = Router();
-router.route("/")
+import { authorizeUser } from "../middleware/authorize.mid.js";
+import {
+    getLikedVideos,
+    toggleCommentLike,
+    toggleTweetLike,
+    toggleVideoLike
+} from "../controllers/like.controller.js";
+
+router.route("/toggle-video").post(authorizeUser, toggleVideoLike);
+router.route("/toggle-comment").post(authorizeUser, toggleCommentLike);
+router.route("/toggle-tweet").post(authorizeUser, toggleTweetLike);
+router.route("/my-liked-videos").post(authorizeUser, getLikedVideos);
+
 export default router;

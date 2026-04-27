@@ -14,7 +14,7 @@ const likeSchema = new Schema(
       required: true
     },
     likedBy: {
-      type: Schema.types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true
     }
@@ -26,4 +26,4 @@ likeSchema.index({ targetId: 1, targetType: 1, likedBy: 1 }, { unique: true });
 
 
 
-export const like = mongoose.model("Like", likeSchema);
+export const Like = mongoose.model("Like", likeSchema);

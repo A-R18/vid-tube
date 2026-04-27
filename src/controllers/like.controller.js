@@ -1,4 +1,3 @@
-import mongoose, { isValidObjectId } from "mongoose";
 import { Like } from "../models/like.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
@@ -12,10 +11,18 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
   }
   const alreadyLiked = await Like.findOne({ targetId: videoId, likedBy: req.user._id });
   if (alreadyLiked) {
-    await Like.deleteOne({ targetId: videoId, likedBy: req.user._id });
+    await Like.deleteOne({
+      targetId: videoId, likedBy:
+        req.user._id,
+      targetType: "Video"
+    });
     res.status(200).json({ message: "Like removed!" });
   } else {
-    await Like.insertOne({ targetId: videoId, likedBy: req.user._id });
+    await Like.insertOne({
+      targetId: videoId,
+      likedBy: req.user._id,
+      targetType: "Video"
+    });
     res.status(200).json({ message: "Like added!" });
   }
 });
@@ -27,12 +34,24 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
   if (!commentId) {
     return res.status(400).json({ alert: "Comment data is required!" });
   }
-  const alreadyLiked = await Like.findOne({ targetId: commentId, likedBy: req.user._id });
+  const alreadyLiked = await Like.findOne({
+    targetId: commentId,
+    likedBy: req.user._id,
+    targetType: "Comment"
+  });
   if (alreadyLiked) {
-    await Like.deleteOne({ targetId: commentId, likedBy: req.user._id });
+    await Like.deleteOne({
+      targetId: commentId,
+      likedBy: req.user._id,
+      targetType: "Comment"
+    });
     res.status(200).json({ message: "Like removed!" });
   } else {
-    await Like.insertOne({ targetId: commentId, likedBy: req.user._id });
+    await Like.insertOne({
+      targetId: commentId,
+      likedBy: req.user._id,
+      targetType: "Comment"
+    });
     res.status(200).json({ message: "Like added!" });
   }
 });
@@ -46,10 +65,18 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
   }
   const alreadyLiked = await Like.findOne({ targetId: tweetId, likedBy: req.user._id });
   if (alreadyLiked) {
-    await Like.deleteOne({ targetId: tweetId, likedBy: req.user._id });
+    await Like.deleteOne({
+      targetId: tweetId,
+      likedBy: req.user._id,
+      targetType: "Tweet"
+    });
     res.status(200).json({ message: "Like removed!" });
   } else {
-    await Like.insertOne({ targetId: tweetId, likedBy: req.user._id });
+    await Like.insertOne({
+      targetId: tweetId,
+      likedBy: req.user._id,
+      targetType: "Tweet"
+    });
     res.status(200).json({ message: "Like added!" });
   }
 });
@@ -60,8 +87,10 @@ const getLikedVideos = asyncHandler(async (req, res) => {
   if (!likedVideosFetched) {
     return res.status(400).json({ alert: "couldn't fetch liked videos" });
   }
-  return res.status(200).json({ message: "Liked videos fetched successfully!",
-     likedVideos: likedVideosFetched });
+  return res.status(200).json({
+    message: "Liked videos fetched successfully!",
+    likedVideos: likedVideosFetched
+  });
 });
 
 export {

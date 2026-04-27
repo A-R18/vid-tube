@@ -22,7 +22,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
 const publishAVideo = asyncHandler(async (req, res) => {
   const { vid_title, desc } = req.body;
   // TODO: get video, upload to cloudinary, create video
-    console.log(req.files);
+  console.log(req.files);
   if (!req?.files?.thumbnail || !req?.files?.video) {
     return res.status(403).json({ message: "File and video both are required!" });
   }
@@ -96,7 +96,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     thumbnailFileName = req.files?.thumbnail[0]?.path;
     thumbnailUpdated = await uploadOnCloudnary(thumbnailFileName);
     await deleteFromCloudnary(videoFetched.thumbnail_public_id, "image");
-
+    await fs.unlink(thumbnailFileName);
     if (!thumbnailUpdated) {
       return res.status(400).json({ alert: "Thumbnail wasn't updated" });
     }
@@ -106,6 +106,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     videoFileName = req.files?.video[0]?.path;
     videoUpdated = await uploadOnCloudnary(videoFileName);
     await deleteFromCloudnary(videoFetched.video_public_id, "video");
+    await fs.unlink(videoFileName);
     if (!videoUpdated) {
       return res.status(400).json({ alert: "Video wasn't updated" });
     }
