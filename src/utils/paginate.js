@@ -1,0 +1,7 @@
+const paginate = ()=>{
+
+}
+
+export {
+    paginate
+}

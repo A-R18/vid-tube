@@ -3,7 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { User } from "../models/user.model.js";
 import { deleteFromCloudnary, uploadOnCloudnary } from "../utils/uploadsCloudnary.js";
-
+import { paginate } from "../utils/paginate.js";
 const regUser = asyncHandler(async (req, res) => {
   const { fullName, mail, usName, pass } = req.body;
 

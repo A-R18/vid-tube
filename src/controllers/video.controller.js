@@ -5,7 +5,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { deleteFromCloudnary, uploadOnCloudnary } from "../utils/uploadsCloudnary.js";
 import fs from "fs/promises";
-
+import { paginate } from "../utils/paginate.js";
 const getAllVideos = asyncHandler(async (req, res) => {
   //TODO: get all videos based on query, sort, pagination
   const { userId } = req.query;

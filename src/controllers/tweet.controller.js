@@ -3,7 +3,7 @@ import { Tweet } from "../models/tweet.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-
+import { paginate } from "../utils/paginate.js";
 const createTweet = asyncHandler(async (req, res) => {
   //TODO: create tweet
   const { tweet_cont } = req.body;

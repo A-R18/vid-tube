@@ -5,7 +5,7 @@ import { Like } from "../models/like.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-
+import { paginate } from "../utils/paginate.js";
 const getChannelStats = asyncHandler(async (req, res) => {
   // TODO: Get the channel stats like (views are not specified/calculated!) total video views, total subscribers, total videos, total likes etc.
   const { channelId } = req.params;
