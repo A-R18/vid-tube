@@ -12,8 +12,8 @@ const createTweet = asyncHandler(async (req, res) => {
   }
   const tweetData = {
     content: tweet_cont,
-    owner: new mongoose.Types.ObjectId(req.user._id)
-  }
+    owner: new mongoose.Types.ObjectId(req.user._id),
+  };
   const tweetSaved = await Tweet.insertOne(tweetData);
   if (!tweetSaved) {
     return res.status(400).json({ alert: "tweet not saved!" });
@@ -27,8 +27,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
   if (!tweetsFetched) {
     return res.status(400).json({ alert: "Something went wrong!" });
   }
-  return res.status(200).json({message:"Tweets fetched!", tweets: tweetsFetched});
-
+  return res.status(200).json({ message: "Tweets fetched!", tweets: tweetsFetched });
 });
 
 const updateTweet = asyncHandler(async (req, res) => {
@@ -43,8 +42,8 @@ const updateTweet = asyncHandler(async (req, res) => {
   }
 
   const tweetUpdatedData = {
-    content: tweet_cont
-  }
+    content: tweet_cont,
+  };
   const tweetUpdated = await Tweet.findByIdAndUpdate(tweetId, tweetUpdatedData);
   if (!tweetUpdated) {
     return res.status(400).json({ alert: "Tweet not updated!" });
@@ -57,18 +56,16 @@ const deleteTweet = asyncHandler(async (req, res) => {
   if (!tweetId) {
     return res.status(400).json({ alert: "Please specify tweet" });
   }
-  const tweetDeleted = await Tweet.deleteOne({_id: tweetId});
+  const tweetDeleted = await Tweet.deleteOne({ _id: tweetId });
   if (!tweetDeleted) {
     return res.status(400).json({ alert: "Tweet not deleted!" });
   }
   return res.status(200).json({ message: "Tweet deleted successfully!" });
-
-
 });
 
 export {
-  createTweet,
   getUserTweets,
+  createTweet,
   updateTweet,
   deleteTweet
 };

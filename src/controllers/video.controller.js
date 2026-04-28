@@ -16,7 +16,9 @@ const getAllVideos = asyncHandler(async (req, res) => {
   if (!allVideosFetched) {
     return res.status(404).json({ alert: "video(s) not found!" });
   }
-  return res.status(200).json({ message: "videos fetched successfully!", videos: allVideosFetched });
+  return res
+    .status(200)
+    .json({ message: "videos fetched successfully!", videos: allVideosFetched });
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {
@@ -33,12 +35,14 @@ const publishAVideo = asyncHandler(async (req, res) => {
   }
   const [videoUploaded, thumbnailUploaded] = await Promise.all([
     uploadOnCloudnary(videoFileName),
-    uploadOnCloudnary(thumbnailFileName)]);
+    uploadOnCloudnary(thumbnailFileName),
+  ]);
 
   if (!videoUploaded || !thumbnailUploaded) {
     await Promise.all([
       deleteFromCloudnary(videoUploaded.video_public_id, "video"),
-      deleteFromCloudnary(thumbnailUploaded.thumbnail_public_id, "image")]);
+      deleteFromCloudnary(thumbnailUploaded.thumbnail_public_id, "image"),
+    ]);
     return res.status(400).json({ alert: "Couldn't upload! video & its thumbnail" });
   }
 
@@ -50,13 +54,11 @@ const publishAVideo = asyncHandler(async (req, res) => {
     thumbnail: thumbnailUploaded.url,
     videoFile: videoUploaded.url,
     thumbnail_public_id: thumbnailUploaded.public_id,
-    video_public_id: videoUploaded.public_id
-  }
+    video_public_id: videoUploaded.public_id,
+  };
   const videoSaved = await Video.insertOne(videoData);
   if (!videoSaved) {
-    await Promise.all([
-      fs.unlink(videoFileName),
-      fs.unlink(thumbnailFileName)]);
+    await Promise.all([fs.unlink(videoFileName), fs.unlink(thumbnailFileName)]);
     return res.status(400).json({ alert: "Couldn't save video data!" });
   }
   return res.status(201).json({ message: "Video uploaded successfully!" });
@@ -71,7 +73,7 @@ const getVideoById = asyncHandler(async (req, res) => {
   if (!videoFetched) {
     return res.status(404).json({ alert: "video not found!" });
   }
-  return res.status(200).json({ message: "video fetched", videoData: videoFetched })
+  return res.status(200).json({ message: "video fetched", videoData: videoFetched });
 });
 
 const updateVideo = asyncHandler(async (req, res) => {
@@ -115,10 +117,12 @@ const updateVideo = asyncHandler(async (req, res) => {
   const videoUpdateData = {
     description: req?.body?.desc ? desc : videoFetched.description,
     video_public_id: req?.files?.video ? videoUpdated.public_id : videoFetched.video_public_id,
-    thumbnail_public_id: req?.files?.thumbnail ? thumbnailUpdated.public_id : videoFetched.thumbnail_public_id,
+    thumbnail_public_id: req?.files?.thumbnail
+      ? thumbnailUpdated.public_id
+      : videoFetched.thumbnail_public_id,
     thumbnail: req?.files?.thumbnail ? thumbnailUpdated.url : videoFetched.thumbnail,
     videoFile: req?.files?.video ? videoUpdated.url : videoFetched.videoFile,
-  }
+  };
 
   const VideoSaved = await Video.findByIdAndUpdate(videoId, videoUpdateData);
   if (!VideoSaved) {
@@ -141,10 +145,14 @@ const deleteVideo = asyncHandler(async (req, res) => {
   const videoRemovedCompletely = await Promise.all([
     deleteFromCloudnary(videoFetched.video_public_id, "video"),
     deleteFromCloudnary(videoFetched.thumbnail_public_id, "image"),
-    Video.findOneAndDelete({ _id: new mongoose.Types.ObjectId(videoId) })
+    Video.findOneAndDelete({ _id: new mongoose.Types.ObjectId(videoId) }),
   ]);
-  console.log("video pub id: \n", videoFetched.video_public_id,
-    "thumbnail pub id: \n", videoFetched.thumbnail_public_id);
+  console.log(
+    "video pub id: \n",
+    videoFetched.video_public_id,
+    "thumbnail pub id: \n",
+    videoFetched.thumbnail_public_id
+  );
 
   if (!videoRemovedCompletely) {
     return res.status(400).json({ alert: "error in deleting video!" });
@@ -162,16 +170,14 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     return res.status(404).json({ alert: "video not found!" });
   }
 
-  const videoPublishStatusToggled =
-    videoFetched.isPublished ?
-      await Video.findByIdAndUpdate(videoFetched._id, { isPublished: false }) :
-      await Video.findByIdAndUpdate(videoFetched._id, { isPublished: true });
+  const videoPublishStatusToggled = videoFetched.isPublished
+    ? await Video.findByIdAndUpdate(videoFetched._id, { isPublished: false })
+    : await Video.findByIdAndUpdate(videoFetched._id, { isPublished: true });
 
   if (!videoPublishStatusToggled) {
     return res.status(400).json({ alert: "video status wasn't updated!" });
   }
   return res.status(200).json({ message: "video status updated successfully!" });
-
 });
 
 export {

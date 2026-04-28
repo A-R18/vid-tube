@@ -33,7 +33,8 @@ const deleteFromCloudnary = async (publicID, resourceType) => {
       api_secret: process.env.CLOUDNARY_API_SECRET,
     });
     await cloudinary.uploader.destroy(publicID, {
-      resource_type: resourceType, invalidate:true
+      resource_type: resourceType,
+      invalidate: true,
     });
     console.log("Deleted from cloudinary, via public id ");
   } catch (error) {

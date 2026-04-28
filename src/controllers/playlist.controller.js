@@ -11,8 +11,8 @@ const createPlaylist = asyncHandler(async (req, res) => {
     playList_name: name,
     playList_description: desc,
     playList_videos: videos,
-    owner: req.user._id
-  }
+    owner: req.user._id,
+  };
 
   const playListCreated = await Playlist.insertOne(playListData);
   if (!playListCreated) {
@@ -27,7 +27,9 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
   if (!userPlayListsFetched) {
     return res.status(400).json({ alert: "Couldn't fetch playlist(s)" });
   }
-  return res.status(200).json({ message: "Playlist(s) fetched successfully", playlists: userPlayListsFetched });
+  return res
+    .status(200)
+    .json({ message: "Playlist(s) fetched successfully", playlists: userPlayListsFetched });
   //TODO: get user playlists
 });
 
@@ -38,8 +40,9 @@ const getPlaylistById = asyncHandler(async (req, res) => {
   if (!playListFetched) {
     return res.status(400).json({ alert: "Coudln't fetch playlist!" });
   }
-  return res.status(200).json({ message: "Playlist fetched successfully!", playlist: playListFetched });
-
+  return res
+    .status(200)
+    .json({ message: "Playlist fetched successfully!", playlist: playListFetched });
 });
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
@@ -47,8 +50,10 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
   const videoAddedToPlaylist = await Playlist.updateOne(
     { _id: new mongoose.Types.ObjectId(playlistId) },
     {
-      $push: { videos: new mongoose.Types.ObjectId(videoId) }
-    }, { upsert: true });
+      $push: { videos: new mongoose.Types.ObjectId(videoId) },
+    },
+    { upsert: true }
+  );
   if (!videoAddedToPlaylist) {
     return res.status(400).json({ alert: "Couldn't add video to playlist!" });
   }
@@ -60,8 +65,9 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
   const videoRemovedToPlaylist = await Playlist.updateOne(
     { _id: new mongoose.Types.ObjectId(playlistId) },
     {
-      $pull: { videos: new mongoose.Types.ObjectId(videoId) }
-    });
+      $pull: { videos: new mongoose.Types.ObjectId(videoId) },
+    }
+  );
   if (!videoRemovedToPlaylist) {
     return res.status(400).json({ alert: "Couldn't remove video from playlist!" });
   }
@@ -80,7 +86,6 @@ const deletePlaylist = asyncHandler(async (req, res) => {
   return res.status(200).json({ message: "Playlist deleted successfully!" });
 });
 
-
 const updatePlaylistData = asyncHandler(async (req, res) => {
   //TODO: update playlist
   const { playlistId, name, description } = req.body;
@@ -88,16 +93,16 @@ const updatePlaylistData = asyncHandler(async (req, res) => {
   if (!playListFetched) {
     return res.status(400).json({ alert: "Playlist not found!" });
   }
-  const playListDataUpdated = await Playlist.updateOne({ _id: playlistId },
-    { $set: { playList_name: name, playList_description: description } });
+  const playListDataUpdated = await Playlist.updateOne(
+    { _id: playlistId },
+    { $set: { playList_name: name, playList_description: description } }
+  );
 
   if (!playListDataUpdated) {
     return res.status(400).json({ alert: "Couldn't update playlist!" });
   }
 
   return res.status(200).json({ message: "Updated playlist successfully!" });
-
-
 });
 
 export {

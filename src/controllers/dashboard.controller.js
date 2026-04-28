@@ -17,8 +17,8 @@ const getChannelStats = asyncHandler(async (req, res) => {
   const totalLikes = await Video.aggregate([
     {
       $match: {
-        owner: new mongoose.Types.ObjectId(channelId)
-      }
+        owner: new mongoose.Types.ObjectId(channelId),
+      },
     },
 
     {
@@ -26,35 +26,34 @@ const getChannelStats = asyncHandler(async (req, res) => {
         from: "likes",
         localField: "_id",
         foreignField: "targetId",
-        as: "likesOnVideo"
-      }
+        as: "likesOnVideo",
+      },
     },
 
     {
-      $unwind: "$likesOnVideo"
+      $unwind: "$likesOnVideo",
     },
 
     {
       $group: {
         _id: null,
-        count: { $sum: 1 }
-      }
+        count: { $sum: 1 },
+      },
     },
 
     {
       $project: {
-        totalLikes: "$count", _id: 0
-      }
-    }
-
+        totalLikes: "$count",
+        _id: 0,
+      },
+    },
   ]);
 
   return res.status(202).json({
     videos: totalVideos,
     subscribers: totalSubscriptions,
-    totalLikesOnVideos: totalLikes[0].totalLikes
+    totalLikesOnVideos: totalLikes[0].totalLikes,
   });
-
 });
 
 const getChannelVideos = asyncHandler(async (req, res) => {
@@ -62,9 +61,14 @@ const getChannelVideos = asyncHandler(async (req, res) => {
   const { channelId } = req.params;
   const channelVideosFetched = await Video.find({ owner: new mongoose.Types.ObjectId(channelId) });
   if (!channelVideosFetched) {
-    return res.status(400).json({ alert: "Couldn't fetch channel videos!" })
+    return res.status(400).json({ alert: "Couldn't fetch channel videos!" });
   }
-  return res.status(200).json({ message: "Channel videos fetched!", channelVideos: channelVideosFetched });
+  return res
+    .status(200)
+    .json({ message: "Channel videos fetched!", channelVideos: channelVideosFetched });
 });
 
-export { getChannelStats, getChannelVideos };
+export {
+  getChannelStats,
+  getChannelVideos
+};

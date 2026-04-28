@@ -12,16 +12,16 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
   const alreadyLiked = await Like.findOne({ targetId: videoId, likedBy: req.user._id });
   if (alreadyLiked) {
     await Like.deleteOne({
-      targetId: videoId, likedBy:
-        req.user._id,
-      targetType: "Video"
+      targetId: videoId,
+      likedBy: req.user._id,
+      targetType: "Video",
     });
     res.status(200).json({ message: "Like removed!" });
   } else {
     await Like.insertOne({
       targetId: videoId,
       likedBy: req.user._id,
-      targetType: "Video"
+      targetType: "Video",
     });
     res.status(200).json({ message: "Like added!" });
   }
@@ -37,27 +37,26 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
   const alreadyLiked = await Like.findOne({
     targetId: commentId,
     likedBy: req.user._id,
-    targetType: "Comment"
+    targetType: "Comment",
   });
   if (alreadyLiked) {
     await Like.deleteOne({
       targetId: commentId,
       likedBy: req.user._id,
-      targetType: "Comment"
+      targetType: "Comment",
     });
     res.status(200).json({ message: "Like removed!" });
   } else {
     await Like.insertOne({
       targetId: commentId,
       likedBy: req.user._id,
-      targetType: "Comment"
+      targetType: "Comment",
     });
     res.status(200).json({ message: "Like added!" });
   }
 });
 
 const toggleTweetLike = asyncHandler(async (req, res) => {
-
   //TODO: toggle like on tweet
   const { tweetId } = req.body;
   if (!tweetId) {
@@ -68,14 +67,14 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
     await Like.deleteOne({
       targetId: tweetId,
       likedBy: req.user._id,
-      targetType: "Tweet"
+      targetType: "Tweet",
     });
     res.status(200).json({ message: "Like removed!" });
   } else {
     await Like.insertOne({
       targetId: tweetId,
       likedBy: req.user._id,
-      targetType: "Tweet"
+      targetType: "Tweet",
     });
     res.status(200).json({ message: "Like added!" });
   }
@@ -89,7 +88,7 @@ const getLikedVideos = asyncHandler(async (req, res) => {
   }
   return res.status(200).json({
     message: "Liked videos fetched successfully!",
-    likedVideos: likedVideosFetched
+    likedVideos: likedVideosFetched,
   });
 });
 

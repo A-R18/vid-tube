@@ -6,24 +6,22 @@ const likeSchema = new Schema(
     targetId: {
       type: Schema.Types.ObjectId,
       required: true,
-      refPath: "targetType"
+      refPath: "targetType",
     },
     targetType: {
       type: String,
       enum: ["Video", "Comment", "Tweet"],
-      required: true
+      required: true,
     },
     likedBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true
-    }
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
 likeSchema.index({ targetId: 1, targetType: 1, likedBy: 1 }, { unique: true });
-
-
 
 export const Like = mongoose.model("Like", likeSchema);

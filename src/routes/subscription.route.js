@@ -2,9 +2,9 @@ import { Router } from "express";
 const router = Router();
 import { authorizeUser } from "../middleware/authorize.mid.js";
 import {
-    toggleSubscription,
-    getSubscribedChannels,
-    getUserChannelSubscribers,
+  toggleSubscription,
+  getSubscribedChannels,
+  getUserChannelSubscribers,
 } from "../controllers/subscription.controller.js";
 
 router.route("/toggle-subscription/:channelId").post(authorizeUser, toggleSubscription);

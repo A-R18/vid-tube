@@ -13,8 +13,9 @@ const getVideoComments = asyncHandler(async (req, res) => {
   if (!commentsOnVideoFetched) {
     return res.status(400).json({ alert: "Comments not fetched!" });
   }
-  return res.status(200).json({ message: "Comments fetched! successfully!",
-     comments: commentsOnVideoFetched });
+  return res
+    .status(200)
+    .json({ message: "Comments fetched! successfully!", comments: commentsOnVideoFetched });
 });
 
 const addComment = asyncHandler(async (req, res) => {
@@ -26,8 +27,8 @@ const addComment = asyncHandler(async (req, res) => {
   const commentData = {
     video: new mongoose.Types.ObjectId(videoId),
     owner: req.user._id,
-    content: comment
-  }
+    content: comment,
+  };
   const commentSaved = await Comment.insertOne(commentData);
   if (!commentSaved) {
     return res.status(400).json({ alert: "Comment was not saved!" });
@@ -44,23 +45,23 @@ const updateComment = asyncHandler(async (req, res) => {
   const commentUpdated = await Comment.findOneAndUpdate(
     { _id: commentId, owner: req.user._id },
     { $set: { content: comment } },
-    { new: true });
+    { new: true }
+  );
   if (!commentUpdated) {
     return res.status(400).json({ alert: "Couldn't update comment!" });
   }
-  return res.status(200).json({ message: "Comment updated successfully!",
-     updatedComm: commentUpdated })
-
+  return res
+    .status(200)
+    .json({ message: "Comment updated successfully!", updatedComm: commentUpdated });
 });
 
 const deleteComment = asyncHandler(async (req, res) => {
   // TODO: delete a comment
   const { commentId } = req.body;
   if (!commentId) {
-    return res.status(400).json({ alert: "Please provide reference of comment!" })
+    return res.status(400).json({ alert: "Please provide reference of comment!" });
   }
-  const commentDeleted = await Comment.findOneAndDelete(
-    { _id: commentId, owner: req.user._id });
+  const commentDeleted = await Comment.findOneAndDelete({ _id: commentId, owner: req.user._id });
   if (!commentDeleted) {
     return res.status(400).json({ alert: "Couldn't delete comment!" });
   }
@@ -71,5 +72,5 @@ export {
   addComment,
   deleteComment,
   updateComment,
-  getVideoComments,
+  getVideoComments
 };

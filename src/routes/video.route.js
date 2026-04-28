@@ -1,36 +1,44 @@
 import { Router } from "express";
 import {
-    updateVideo,
-    deleteVideo,
-    getVideoById,
-    publishAVideo,
-    togglePublishStatus,
+  updateVideo,
+  deleteVideo,
+  getVideoById,
+  publishAVideo,
+  togglePublishStatus,
 } from "../controllers/video.controller.js";
 import { authorizeUser } from "../middleware/authorize.mid.js";
 import { uploadFile } from "../middleware/fileUpload.mid.js";
 const router = Router();
-router.route("/upload-video").post(authorizeUser, uploadFile.fields([
+router.route("/upload-video").post(
+  authorizeUser,
+  uploadFile.fields([
     {
-        name: "video",
-        maxCount: 1
+      name: "video",
+      maxCount: 1,
     },
     {
-        name: "thumbnail",
-        maxCount: 1
-    }
-]), publishAVideo);
+      name: "thumbnail",
+      maxCount: 1,
+    },
+  ]),
+  publishAVideo
+);
 
 router.route("/video/:videoId").get(authorizeUser, getVideoById);
-router.route("/update-video/:videoId").post(authorizeUser, uploadFile.fields([
+router.route("/update-video/:videoId").post(
+  authorizeUser,
+  uploadFile.fields([
     {
-        name: "video",
-        maxCount:1
+      name: "video",
+      maxCount: 1,
     },
     {
-        name: "thumbnail",
-        maxCount:1
+      name: "thumbnail",
+      maxCount: 1,
     },
-]), updateVideo);
+  ]),
+  updateVideo
+);
 router.route("/delete-video/:videoId").post(authorizeUser, deleteVideo);
 router.route("/toggle-video-status/:videoId").post(authorizeUser, togglePublishStatus);
 export default router;
