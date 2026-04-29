@@ -6,19 +6,31 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { deleteFromCloudnary, uploadOnCloudnary } from "../utils/uploadsCloudnary.js";
 import fs from "fs/promises";
 import { paginate } from "../utils/paginate.js";
+
+
 const getAllVideos = asyncHandler(async (req, res) => {
   //TODO: get all videos based on query, sort, pagination
-  const { userId } = req.query;
+  console.log(Video);
+  const { userId } = req.body;
   if (!userId) {
     return res.status(400).json({ alert: "Please specify userId" });
   }
-  const allVideosFetched = await Video.find({ owner: new mongoose.Types.ObjectId(userId) });
+  const { page, lastPage, count, offset, limit } = await paginate(req.query.page, "video");
+  const allVideosFetched = await Video.find({ owner: new mongoose.Types.ObjectId(userId) })
+    .skip(offset).
+    limit(limit);
   if (!allVideosFetched) {
     return res.status(404).json({ alert: "video(s) not found!" });
   }
   return res
     .status(200)
-    .json({ message: "videos fetched successfully!", videos: allVideosFetched });
+    .json({
+      message: "videos fetched successfully!",
+      totalVideos: count,
+      currentPage: page,
+      totalPages: lastPage,
+      videos: allVideosFetched
+    });
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {

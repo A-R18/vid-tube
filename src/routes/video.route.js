@@ -5,6 +5,7 @@ import {
   getVideoById,
   publishAVideo,
   togglePublishStatus,
+  getAllVideos,
 } from "../controllers/video.controller.js";
 import { authorizeUser } from "../middleware/authorize.mid.js";
 import { uploadFile } from "../middleware/fileUpload.mid.js";
@@ -25,6 +26,7 @@ router.route("/upload-video").post(
 );
 
 router.route("/video/:videoId").get(authorizeUser, getVideoById);
+router.route("/my-videos").get(authorizeUser, getAllVideos);
 router.route("/update-video/:videoId").post(
   authorizeUser,
   uploadFile.fields([
