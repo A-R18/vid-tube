@@ -63,9 +63,4 @@ const deleteTweet = asyncHandler(async (req, res) => {
   return res.status(200).json({ message: "Tweet deleted successfully!" });
 });
 
-export {
-  getUserTweets,
-  createTweet,
-  updateTweet,
-  deleteTweet
-};
+export { getUserTweets, createTweet, updateTweet, deleteTweet };

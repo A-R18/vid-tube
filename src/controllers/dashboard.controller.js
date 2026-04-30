@@ -68,7 +68,4 @@ const getChannelVideos = asyncHandler(async (req, res) => {
     .json({ message: "Channel videos fetched!", channelVideos: channelVideosFetched });
 });
 
-export {
-  getChannelStats,
-  getChannelVideos
-};
+export { getChannelStats, getChannelVideos };

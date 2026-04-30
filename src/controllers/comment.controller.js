@@ -68,9 +68,4 @@ const deleteComment = asyncHandler(async (req, res) => {
   return res.status(200).json({ message: "comment deleted successfully!" });
 });
 
-export {
-  addComment,
-  deleteComment,
-  updateComment,
-  getVideoComments
-};
+export { addComment, deleteComment, updateComment, getVideoComments };
