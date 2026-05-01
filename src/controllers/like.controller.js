@@ -1,7 +1,8 @@
-import { Like } from "../models/like.models.js";
+import { Like } from "../models/like.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { paginate } from "../utils/paginate.js";
 
 const toggleVideoLike = asyncHandler(async (req, res) => {
   //TODO: toggle like on video
@@ -82,13 +83,21 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 
 const getLikedVideos = asyncHandler(async (req, res) => {
   //TODO: get all liked videos
-  const likedVideosFetched = await Like.find({ likedBy: req.user._id, targetType: "Video" });
+
+  const count = await Like.countDocuments({ likedBy: req.user._id, targetType: "Video" });
+  const { page, lastPage, offset, limit } = await paginate(req.query.page, count);
+  const likedVideosFetched = await Like.find({ likedBy: req.user._id, targetType: "Video" })
+    .skip(offset)
+    .limit(limit);
   if (!likedVideosFetched) {
     return res.status(400).json({ alert: "couldn't fetch liked videos" });
   }
   return res.status(200).json({
     message: "Liked videos fetched successfully!",
     likedVideos: likedVideosFetched,
+    totalPages: lastPage,
+    currentPage: page,
+    totalVideos: count
   });
 });
 

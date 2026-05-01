@@ -1,21 +1,31 @@
 import mongoose from "mongoose";
-import { Comment } from "../models/comment.models.js";
+import { Comment } from "../models/comment.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { paginate } from "../utils/paginate.js";
+
 const getVideoComments = asyncHandler(async (req, res) => {
   //TODO: get all comments for a video
   const { videoId } = req.params;
-  const { page } = req.query;
+  const count = await Comment.countDocuments({ video: videoId });
+  const { page, lastPage, offset, limit } = await paginate(req.query.page, count);
 
-  const commentsOnVideoFetched = await Comment.find({ video: videoId });
+  const commentsOnVideoFetched = await Comment.find({ video: videoId })
+    .skip(offset)
+    .limit(limit);
   if (!commentsOnVideoFetched) {
     return res.status(400).json({ alert: "Comments not fetched!" });
   }
   return res
     .status(200)
-    .json({ message: "Comments fetched! successfully!", comments: commentsOnVideoFetched });
+    .json({
+      message: "Comments fetched! successfully!",
+      comments: commentsOnVideoFetched,
+      currentPage: page,
+      totalPages: lastPage,
+      totalComments: count
+    });
 });
 
 const addComment = asyncHandler(async (req, res) => {

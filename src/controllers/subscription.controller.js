@@ -48,14 +48,25 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 
 // controller to return channel list to which user has subscribed
 const getSubscribedChannels = asyncHandler(async (req, res) => {
-  const subscriptionsFetched = await Subscription.find({ subscriber: req.user._id });
+  const count = await Subscription.countDocuments({ subscriber: req.user._id });
+  const { page, lastPage, offset, limit } = await paginate(req.query.page, count);
+  const subscriptionsFetched = await Subscription.find({ subscriber: req.user._id })
+    .offset(offset)
+    .limit(limit);
   if (!subscriptionsFetched) {
     return res.status(400).json({ alert: "Couldn't fetch subscriptions!" });
   }
   return res.status(200).json({
     message: "Subscriptions fetched successfully!",
     subscriptions: subscriptionsFetched,
+    currentPage: page,
+    totalPages: lastPage,
+    totalSubscribers: count
   });
 });
 
-export { toggleSubscription, getUserChannelSubscribers, getSubscribedChannels };
+export {
+  toggleSubscription,
+  getUserChannelSubscribers,
+  getSubscribedChannels
+};

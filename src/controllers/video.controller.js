@@ -14,7 +14,8 @@ const getAllVideos = asyncHandler(async (req, res) => {
   if (!userId) {
     return res.status(400).json({ alert: "Please specify userId" });
   }
-  const { page, lastPage, count, offset, limit } = await paginate(req.query.page, "video");
+    const count = await Video.countDocuments({ owner: new mongoose.Types.ObjectId(userId) });
+  const { page, lastPage, offset, limit } = await paginate(req.query.page, count);
   const allVideosFetched = await Video.find({ owner: new mongoose.Types.ObjectId(userId) })
     .skip(offset)
     .limit(limit);
