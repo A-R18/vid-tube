@@ -25,19 +25,22 @@ const getUserTweets = asyncHandler(async (req, res) => {
   // TODO: get user tweets
   const count = await Tweet.countDocuments({ owner: req.user._id });
   const { page, lastPage, offset, limit } = await paginate(req.query.page, count);
-  const tweetsFetched = await Tweet.find({ owner: req.user._id })
-    .offset(offset)
-    .limit(limit);
+  const tweetsFetched = await Tweet.find({ owner: req.user._id }).offset(offset).limit(limit);
   if (!tweetsFetched) {
     return res.status(400).json(new ApiResponse(400, {}, "Something went wrong!"));
   }
-  return res.status(200)
-    .json(new ApiResponse(200, {
-      tweets: tweetsFetched,
-      currentPage: page,
-      totalPages: lastPage,
-      totalRecords: count
-    }, "Tweets fetched!"));
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        tweets: tweetsFetched,
+        currentPage: page,
+        totalPages: lastPage,
+        totalRecords: count,
+      },
+      "Tweets fetched!"
+    )
+  );
 });
 
 const updateTweet = asyncHandler(async (req, res) => {
@@ -73,9 +76,4 @@ const deleteTweet = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, {}, "Tweet deleted successfully!"));
 });
 
-export {
-  getUserTweets,
-  createTweet,
-  updateTweet,
-  deleteTweet
-};
+export { getUserTweets, createTweet, updateTweet, deleteTweet };

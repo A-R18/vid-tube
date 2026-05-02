@@ -11,21 +11,22 @@ const getVideoComments = asyncHandler(async (req, res) => {
   const count = await Comment.countDocuments({ video: videoId });
   const { page, lastPage, offset, limit } = await paginate(req.query.page, count);
 
-  const commentsOnVideoFetched = await Comment.find({ video: videoId })
-    .skip(offset)
-    .limit(limit);
+  const commentsOnVideoFetched = await Comment.find({ video: videoId }).skip(offset).limit(limit);
   if (!commentsOnVideoFetched) {
     return res.status(400).json(new ApiResponse(400, {}, "Couldn't fetch comments!"));
   }
-  return res
-    .status(200)
-    .json(new ApiResponse(200, {
-      comments: commentsOnVideoFetched,
-      currentPage: page,
-      totalPages: lastPage,
-      totalComments: count
-    }, "Comments fetched! successfully!"));
-
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        comments: commentsOnVideoFetched,
+        currentPage: page,
+        totalPages: lastPage,
+        totalComments: count,
+      },
+      "Comments fetched! successfully!"
+    )
+  );
 });
 
 const addComment = asyncHandler(async (req, res) => {
@@ -74,9 +75,8 @@ const deleteComment = asyncHandler(async (req, res) => {
   const commentDeleted = await Comment.findOneAndDelete({ _id: commentId, owner: req.user._id });
   if (!commentDeleted) {
     return res.status(400).json(new ApiResponse(400, {}, "Couldn't delete comment!"));
-
   }
-  return res.status(200).json(new ApiResponse(400, {}, "Comment deleted successfully!"));;
+  return res.status(200).json(new ApiResponse(400, {}, "Comment deleted successfully!"));
 });
 
 export { addComment, deleteComment, updateComment, getVideoComments };

@@ -72,12 +72,20 @@ const logUserIn = asyncHandler(async (req, res) => {
     secure: true,
   };
 
-  return res
-    .status(200)
-    .cookie("accToken", accessToken, options)
-    .cookie("refToken", refreshToken, options)
-    // .json({ message: "Login successfull!", token: accessToken });
-    .json(new ApiResponse(200, { accessToken: accessToken, refToken: refreshToken }, "Login in successfull!"));
+  return (
+    res
+      .status(200)
+      .cookie("accToken", accessToken, options)
+      .cookie("refToken", refreshToken, options)
+      // .json({ message: "Login successfull!", token: accessToken });
+      .json(
+        new ApiResponse(
+          200,
+          { accessToken: accessToken, refToken: refreshToken },
+          "Login in successfull!"
+        )
+      )
+  );
 });
 
 const logUserOut = asyncHandler(async (req, res) => {
@@ -100,8 +108,6 @@ const logUserOut = asyncHandler(async (req, res) => {
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "User logged out successfully!"));
-
-
 });
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
@@ -115,9 +121,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
   if (passwordsMatch) {
     userExists.password = newPass;
     await userExists.save();
-    return res.status(200)
-      .json(new ApiResponse(200, {}, "Password changed successfully!"));
-
+    return res.status(200).json(new ApiResponse(200, {}, "Password changed successfully!"));
   } else {
     return res.status(401).json(new ApiResponse(401, {}, "Old password entered is wrong!"));
   }
@@ -252,7 +256,11 @@ const getUserChannelData = asyncHandler(async (req, res) => {
     return res.status(404).json(new ApiResponse(404, {}, "Channel data not found!"));
   }
 
-  return res.status(200).json(new ApiResponse(200, { channelInfo: UserChannelInfo }, "Channel data fetched successfully!"));
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, { channelInfo: UserChannelInfo }, "Channel data fetched successfully!")
+    );
 });
 
 const getUserWatchTimeData = asyncHandler(async (req, res) => {
@@ -303,7 +311,13 @@ const getUserWatchTimeData = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, { watchHistory: user[0]?.watchHistory }, "Watch history fetched successfully!"));;
+    .json(
+      new ApiResponse(
+        200,
+        { watchHistory: user[0]?.watchHistory },
+        "Watch history fetched successfully!"
+      )
+    );
 });
 
 export {

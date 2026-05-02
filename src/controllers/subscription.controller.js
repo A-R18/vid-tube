@@ -40,7 +40,11 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
   if (!subscribersFetched) {
     return res.status(400).json(new ApiResponse(400, {}, "Couldn't fetch subscribers!"));
   }
-  return res.status(200).json(new ApiResponse(200, { subscribers: subscribersFetched }, "Subscribers fetched successfully!"));
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, { subscribers: subscribersFetched }, "Subscribers fetched successfully!")
+    );
 });
 
 // controller to return channel list to which user has subscribed
@@ -53,18 +57,18 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
   if (!subscriptionsFetched) {
     return res.status(400).json(new ApiResponse(400, {}, "Couldn't fetch subscriptions!"));
   }
-  return res.status(200).json(new ApiResponse(200,
-    {
-      subscriptions: subscriptionsFetched,
-      currentPage: page,
-      totalPages: lastPage,
-      totalSubscribers: count
-    },
-    "Subscriptions fetched successfully!"));
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        subscriptions: subscriptionsFetched,
+        currentPage: page,
+        totalPages: lastPage,
+        totalSubscribers: count,
+      },
+      "Subscriptions fetched successfully!"
+    )
+  );
 });
 
-export {
-  toggleSubscription,
-  getUserChannelSubscribers,
-  getSubscribedChannels
-};
+export { toggleSubscription, getUserChannelSubscribers, getSubscribedChannels };

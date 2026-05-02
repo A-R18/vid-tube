@@ -49,11 +49,17 @@ const getChannelStats = asyncHandler(async (req, res) => {
     },
   ]);
 
-  return res.status(202).json(new ApiResponse(200, {
-    videos: totalVideos,
-    subscribers: totalSubscriptions,
-    totalLikesOnVideos: totalLikes[0].totalLikes,
-  }, "Total likes fetched!"));;
+  return res.status(202).json(
+    new ApiResponse(
+      200,
+      {
+        videos: totalVideos,
+        subscribers: totalSubscriptions,
+        totalLikesOnVideos: totalLikes[0].totalLikes,
+      },
+      "Total likes fetched!"
+    )
+  );
 });
 
 const getChannelVideos = asyncHandler(async (req, res) => {
@@ -67,17 +73,18 @@ const getChannelVideos = asyncHandler(async (req, res) => {
   if (!channelVideosFetched) {
     return res.status(400).json(new ApiResponse(400, {}, "Couldn't fetch channel videos!"));
   }
-  return res
-    .status(200)
-    .json(new ApiResponse(200, {
-      channelVideos: channelVideosFetched,
-      currentPage: page,
-      totalPages: lastPage,
-      totalVideos: count
-    }, "Channel videos fetched!"));;
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        channelVideos: channelVideosFetched,
+        currentPage: page,
+        totalPages: lastPage,
+        totalVideos: count,
+      },
+      "Channel videos fetched!"
+    )
+  );
 });
 
-export {
-  getChannelStats,
-  getChannelVideos
-};
+export { getChannelStats, getChannelVideos };

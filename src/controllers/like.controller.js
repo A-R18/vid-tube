@@ -92,17 +92,18 @@ const getLikedVideos = asyncHandler(async (req, res) => {
   if (!likedVideosFetched) {
     return res.status(400).json(new ApiResponse(400, {}, "Couldn't fetch liked videos!"));
   }
-  return res.status(200).json(new ApiResponse(200, {
-    likedVideos: likedVideosFetched,
-    totalPages: lastPage,
-    currentPage: page,
-    totalVideos: count
-  }, "Liked videos fetched successfully!"));
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        likedVideos: likedVideosFetched,
+        totalPages: lastPage,
+        currentPage: page,
+        totalVideos: count,
+      },
+      "Liked videos fetched successfully!"
+    )
+  );
 });
 
-export {
-  toggleCommentLike,
-  toggleTweetLike,
-  toggleVideoLike,
-  getLikedVideos
-};
+export { toggleCommentLike, toggleTweetLike, toggleVideoLike, getLikedVideos };

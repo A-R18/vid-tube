@@ -29,7 +29,9 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
   }
   return res
     .status(200)
-    .json(new ApiResponse(200, { playlists: userPlayListsFetched }, "Playlist(s) fetched successfully"));
+    .json(
+      new ApiResponse(200, { playlists: userPlayListsFetched }, "Playlist(s) fetched successfully")
+    );
 });
 
 const getPlaylistById = asyncHandler(async (req, res) => {
@@ -70,7 +72,9 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
   if (!videoRemovedToPlaylist) {
     return res.status(400).json(new ApiResponse(400, {}, "Couldn't remove video from playlist"));
   }
-  return res.status(200).json(new ApiResponse(200, {}, "Video removed from playlist  successfully!"));
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Video removed from playlist  successfully!"));
 });
 
 const deletePlaylist = asyncHandler(async (req, res) => {
