@@ -9,7 +9,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
   // TODO: toggle subscription
   const { channelId } = req.params;
   if (!channelId) {
-    return res.status(404).json({ alert: "channel reference is required!" });
+    return res.status(404).json(new ApiResponse(404, {}, "Chanel reference is required!"));
   }
   const checkIfAlreadySubscribed = await Subscription.findOne({
     channel: new mongoose.Types.ObjectId(channelId),
@@ -23,10 +23,10 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 
   if (checkIfAlreadySubscribed) {
     await Subscription.deleteOne(subscriptionData);
-    return res.status(200).json({ message: "Unsubscribed successfully!" });
+    return res.status(200).json(new ApiResponse(200, {}, "Unsubscribed successfully!"));
   } else {
     await Subscription.insertOne(subscriptionData);
-    return res.status(200).json({ message: "Subscribed successfully!" });
+    return res.status(200).json(new ApiResponse(200, {}, "Subscribed successfully!"));
   }
 });
 
@@ -34,16 +34,13 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {
   const { channelId } = req.params;
   if (!channelId) {
-    return res.status(400).json({ alert: "Channel details are required!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Channel details are required!"));
   }
   const subscribersFetched = await Subscription.find({ channel: channelId });
   if (!subscribersFetched) {
-    return res.status(400).json({ alert: "Couldn't fetch subscribers!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Couldn't fetch subscribers!"));
   }
-  return res.status(200).json({
-    message: "Subscribers fetched successfully!",
-    subscribers: subscribersFetched,
-  });
+  return res.status(200).json(new ApiResponse(200, { subscribers: subscribersFetched }, "Subscribers fetched successfully!"));
 });
 
 // controller to return channel list to which user has subscribed
@@ -54,15 +51,16 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
     .offset(offset)
     .limit(limit);
   if (!subscriptionsFetched) {
-    return res.status(400).json({ alert: "Couldn't fetch subscriptions!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Couldn't fetch subscriptions!"));
   }
-  return res.status(200).json({
-    message: "Subscriptions fetched successfully!",
-    subscriptions: subscriptionsFetched,
-    currentPage: page,
-    totalPages: lastPage,
-    totalSubscribers: count
-  });
+  return res.status(200).json(new ApiResponse(200,
+    {
+      subscriptions: subscriptionsFetched,
+      currentPage: page,
+      totalPages: lastPage,
+      totalSubscribers: count
+    },
+    "Subscriptions fetched successfully!"));
 });
 
 export {

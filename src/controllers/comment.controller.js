@@ -15,24 +15,24 @@ const getVideoComments = asyncHandler(async (req, res) => {
     .skip(offset)
     .limit(limit);
   if (!commentsOnVideoFetched) {
-    return res.status(400).json({ alert: "Comments not fetched!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Couldn't fetch comments!"));
   }
   return res
     .status(200)
-    .json({
-      message: "Comments fetched! successfully!",
+    .json(new ApiResponse(200, {
       comments: commentsOnVideoFetched,
       currentPage: page,
       totalPages: lastPage,
       totalComments: count
-    });
+    }, "Comments fetched! successfully!"));
+
 });
 
 const addComment = asyncHandler(async (req, res) => {
   // TODO: add a comment to a video
   const { videoId, comment } = req.body;
   if (!comment || !videoId) {
-    return res.status(400).json({ alert: "Please provide comment data!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Please provide comment data!"));
   }
   const commentData = {
     video: new mongoose.Types.ObjectId(videoId),
@@ -41,16 +41,16 @@ const addComment = asyncHandler(async (req, res) => {
   };
   const commentSaved = await Comment.insertOne(commentData);
   if (!commentSaved) {
-    return res.status(400).json({ alert: "Comment was not saved!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Comment was not saved"));
   }
-  return res.status(200).json({ message: "Comment saved successfully!" });
+  return res.status(200).json(new ApiResponse(200, {}, "Comment saved successfully!"));
 });
 
 const updateComment = asyncHandler(async (req, res) => {
   // TODO: update a comment
   const { comment, commentId } = req.body;
   if (!comment || !commentId) {
-    return res.status(404).json({ alert: "Please provide comment data" });
+    return res.status(404).json(new ApiResponse(400, {}, "Please provide comment data"));
   }
   const commentUpdated = await Comment.findOneAndUpdate(
     { _id: commentId, owner: req.user._id },
@@ -58,24 +58,25 @@ const updateComment = asyncHandler(async (req, res) => {
     { new: true }
   );
   if (!commentUpdated) {
-    return res.status(400).json({ alert: "Couldn't update comment!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Couldn't update comment!"));
   }
   return res
     .status(200)
-    .json({ message: "Comment updated successfully!", updatedComm: commentUpdated });
+    .json(new ApiResponse(200, { updatedComm: commentUpdated }, "Comment updated successfully!"));
 });
 
 const deleteComment = asyncHandler(async (req, res) => {
   // TODO: delete a comment
   const { commentId } = req.body;
   if (!commentId) {
-    return res.status(400).json({ alert: "Please provide reference of comment!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Please provide referennce of comment"));
   }
   const commentDeleted = await Comment.findOneAndDelete({ _id: commentId, owner: req.user._id });
   if (!commentDeleted) {
-    return res.status(400).json({ alert: "Couldn't delete comment!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Couldn't delete comment!"));
+
   }
-  return res.status(200).json({ message: "comment deleted successfully!" });
+  return res.status(200).json(new ApiResponse(400, {}, "Comment deleted successfully!"));;
 });
 
 export { addComment, deleteComment, updateComment, getVideoComments };

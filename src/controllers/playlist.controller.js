@@ -25,12 +25,11 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
   const { userId } = req.params;
   const userPlayListsFetched = await Playlist.find({ owner: new mongoose.Types.ObjectId(userId) });
   if (!userPlayListsFetched) {
-    return res.status(400).json({ alert: "Couldn't fetch playlist(s)" });
+    return res.status(400).json(new ApiResponse(400, {}, "Couldn't fetch playlist(s)"));
   }
   return res
     .status(200)
-    .json({ message: "Playlist(s) fetched successfully", playlists: userPlayListsFetched });
-  //TODO: get user playlists
+    .json(new ApiResponse(200, { playlists: userPlayListsFetched }, "Playlist(s) fetched successfully"));
 });
 
 const getPlaylistById = asyncHandler(async (req, res) => {
@@ -38,11 +37,11 @@ const getPlaylistById = asyncHandler(async (req, res) => {
   //TODO: get playlist by id
   const playListFetched = await Playlist.findById(playlistId);
   if (!playListFetched) {
-    return res.status(400).json({ alert: "Coudln't fetch playlist!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Couldn't fetch playlist!"));
   }
   return res
     .status(200)
-    .json({ message: "Playlist fetched successfully!", playlist: playListFetched });
+    .json(new ApiResponse(200, { playlist: playListFetched }, "Playlist fetched successfully!"));
 });
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
@@ -55,9 +54,9 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
     { upsert: true }
   );
   if (!videoAddedToPlaylist) {
-    return res.status(400).json({ alert: "Couldn't add video to playlist!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Couldn't add video to playlist!"));
   }
-  return res.status(200).json({ message: "Video added to playlist successfully!" });
+  return res.status(200).json(new ApiResponse(200, {}, "Video added to playlist successfully!"));
 });
 
 const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
@@ -69,21 +68,21 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
     }
   );
   if (!videoRemovedToPlaylist) {
-    return res.status(400).json({ alert: "Couldn't remove video from playlist!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Couldn't remove video from playlist"));
   }
-  return res.status(200).json({ message: "Video removed from playlist successfully!" });
+  return res.status(200).json(new ApiResponse(200, {}, "Video removed from playlist  successfully!"));
 });
 
 const deletePlaylist = asyncHandler(async (req, res) => {
   const { playlistId } = req.body;
   if (!playlistId) {
-    return res.status(400).json({ alert: "Playlist details are required!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Playlist details are required!"));
   }
   const playListDeleted = await Playlist.deleteOne(playlistId);
   if (!playListDeleted) {
-    return res.status(400).json({ alert: "Couldn't delete playlist!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Couldn't delete playlist"));
   }
-  return res.status(200).json({ message: "Playlist deleted successfully!" });
+  return res.status(200).json(new ApiResponse(200, {}, "Playlist deleted successfully!"));
 });
 
 const updatePlaylistData = asyncHandler(async (req, res) => {
@@ -91,7 +90,7 @@ const updatePlaylistData = asyncHandler(async (req, res) => {
   const { playlistId, name, description } = req.body;
   const playListFetched = await Playlist.findById(playlistId);
   if (!playListFetched) {
-    return res.status(400).json({ alert: "Playlist not found!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Playlist not found!"));
   }
   const playListDataUpdated = await Playlist.updateOne(
     { _id: playlistId },
@@ -99,10 +98,10 @@ const updatePlaylistData = asyncHandler(async (req, res) => {
   );
 
   if (!playListDataUpdated) {
-    return res.status(400).json({ alert: "Couldn't update playlist!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Couldn't update playlist!"));
   }
 
-  return res.status(200).json({ message: "Updated playlist successfully!" });
+  return res.status(200).json(new ApiResponse(200, {}, "Updated playlist successfully!"));
 });
 
 export {

@@ -8,7 +8,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
   //TODO: toggle like on video
   const { videoId } = req.body;
   if (!videoId) {
-    return res.status(400).json({ alert: "Video data is required!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Video data is required!"));
   }
   const alreadyLiked = await Like.findOne({ targetId: videoId, likedBy: req.user._id });
   if (alreadyLiked) {
@@ -17,14 +17,14 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
       likedBy: req.user._id,
       targetType: "Video",
     });
-    res.status(200).json({ message: "Like removed!" });
+    res.status(200).json(new ApiResponse(200, {}, "Like removed!"));
   } else {
     await Like.insertOne({
       targetId: videoId,
       likedBy: req.user._id,
       targetType: "Video",
     });
-    res.status(200).json({ message: "Like added!" });
+    res.status(200).json(new ApiResponse(200, {}, "Like added!"));
   }
 });
 
@@ -33,7 +33,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
   //TODO: toggle like on comment
 
   if (!commentId) {
-    return res.status(400).json({ alert: "Comment data is required!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Comment data is required!"));
   }
   const alreadyLiked = await Like.findOne({
     targetId: commentId,
@@ -46,14 +46,14 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
       likedBy: req.user._id,
       targetType: "Comment",
     });
-    res.status(200).json({ message: "Like removed!" });
+    res.status(200).json(new ApiResponse(200, {}, "Like removed!"));
   } else {
     await Like.insertOne({
       targetId: commentId,
       likedBy: req.user._id,
       targetType: "Comment",
     });
-    res.status(200).json({ message: "Like added!" });
+    res.status(200).json(new ApiResponse(200, {}, "Like added!"));
   }
 });
 
@@ -61,7 +61,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
   //TODO: toggle like on tweet
   const { tweetId } = req.body;
   if (!tweetId) {
-    return res.status(400).json({ alert: "tweet data is required!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Tweet data is required!"));
   }
   const alreadyLiked = await Like.findOne({ targetId: tweetId, likedBy: req.user._id });
   if (alreadyLiked) {
@@ -70,14 +70,14 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
       likedBy: req.user._id,
       targetType: "Tweet",
     });
-    res.status(200).json({ message: "Like removed!" });
+    res.status(200).json(new ApiResponse(200, {}, "Like removed!"));
   } else {
     await Like.insertOne({
       targetId: tweetId,
       likedBy: req.user._id,
       targetType: "Tweet",
     });
-    res.status(200).json({ message: "Like added!" });
+    res.status(200).json(new ApiResponse(200, {}, "Like added!"));
   }
 });
 
@@ -90,15 +90,19 @@ const getLikedVideos = asyncHandler(async (req, res) => {
     .skip(offset)
     .limit(limit);
   if (!likedVideosFetched) {
-    return res.status(400).json({ alert: "couldn't fetch liked videos" });
+    return res.status(400).json(new ApiResponse(400, {}, "Couldn't fetch liked videos!"));
   }
-  return res.status(200).json({
-    message: "Liked videos fetched successfully!",
+  return res.status(200).json(new ApiResponse(200, {
     likedVideos: likedVideosFetched,
     totalPages: lastPage,
     currentPage: page,
     totalVideos: count
-  });
+  }, "Liked videos fetched successfully!"));
 });
 
-export { toggleCommentLike, toggleTweetLike, toggleVideoLike, getLikedVideos };
+export {
+  toggleCommentLike,
+  toggleTweetLike,
+  toggleVideoLike,
+  getLikedVideos
+};

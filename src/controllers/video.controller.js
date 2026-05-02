@@ -12,23 +12,23 @@ const getAllVideos = asyncHandler(async (req, res) => {
   console.log(Video);
   const { userId } = req.body;
   if (!userId) {
-    return res.status(400).json({ alert: "Please specify userId" });
+    return res.status(400).json(new ApiResponse(400, {}, "Please specify userId!"));
   }
-    const count = await Video.countDocuments({ owner: new mongoose.Types.ObjectId(userId) });
+  const count = await Video.countDocuments({ owner: new mongoose.Types.ObjectId(userId) });
   const { page, lastPage, offset, limit } = await paginate(req.query.page, count);
   const allVideosFetched = await Video.find({ owner: new mongoose.Types.ObjectId(userId) })
     .skip(offset)
     .limit(limit);
   if (!allVideosFetched) {
-    return res.status(404).json({ alert: "video(s) not found!" });
+    return res.status(404).json(new ApiResponse(404, {}, "Video(s) not found!"));
   }
-  return res.status(200).json({
-    message: "videos fetched successfully!",
-    totalVideos: count,
-    currentPage: page,
-    totalPages: lastPage,
-    videos: allVideosFetched,
-  });
+  return res.status(200)
+    .json(new ApiResponse(200, {
+      totalVideos: count,
+      currentPage: page,
+      totalPages: lastPage,
+      videos: allVideosFetched,
+    }, "videos fetched successfully!"));
 });
 
 const publishAVideo = asyncHandler(async (req, res) => {
@@ -36,12 +36,12 @@ const publishAVideo = asyncHandler(async (req, res) => {
   // TODO: get video, upload to cloudinary, create video
   console.log(req.files);
   if (!req?.files?.thumbnail || !req?.files?.video) {
-    return res.status(403).json({ message: "File and video both are required!" });
+    return res.status(403).json(new ApiResponse(403, {}, "File & video both are required!"));
   }
   const thumbnailFileName = req?.files?.thumbnail[0]?.path;
   const videoFileName = req?.files?.video[0]?.path;
   if (!thumbnailFileName || !videoFileName) {
-    return res.status(404).json({ alert: "please specify thumbnail & video!" });
+    return res.status(404).json(new ApiResponse(404, {}, "Please specify thumbnail & video"));
   }
   const [videoUploaded, thumbnailUploaded] = await Promise.all([
     uploadOnCloudnary(videoFileName),
@@ -53,7 +53,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
       deleteFromCloudnary(videoUploaded.video_public_id, "video"),
       deleteFromCloudnary(thumbnailUploaded.thumbnail_public_id, "image"),
     ]);
-    return res.status(400).json({ alert: "Couldn't upload! video & its thumbnail" });
+    return res.status(400).json(new ApiResponse(400, {}, "Couldn't upload video and its thumbnail!"));
   }
 
   console.log(videoUploaded, "\n\n", thumbnailUploaded);
@@ -69,21 +69,23 @@ const publishAVideo = asyncHandler(async (req, res) => {
   const videoSaved = await Video.insertOne(videoData);
   if (!videoSaved) {
     await Promise.all([fs.unlink(videoFileName), fs.unlink(thumbnailFileName)]);
-    return res.status(400).json({ alert: "Couldn't save video data!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Couldn't save video data!"));
   }
-  return res.status(201).json({ message: "Video uploaded successfully!" });
+  return res.status(201).json(new ApiResponse(201, {}, "Video uploaded successfully!"));
 });
 
 const getVideoById = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   if (!videoId) {
-    return res.status(400).json({ alert: "please specify video Id" });
+    return res.status(400).json(new ApiResponse(400, {}, "Please specify videoId!"));
   }
   const videoFetched = await Video.findOne({ _id: new mongoose.Types.ObjectId(videoId) });
   if (!videoFetched) {
-    return res.status(404).json({ alert: "video not found!" });
+    return res.status(404)
+      .json(new ApiResponse(404, {}, "Video not found!"));
   }
-  return res.status(200).json({ message: "video fetched", videoData: videoFetched });
+  return res.status(200)
+    .json(new ApiResponse(200, { videoData: videoFetched }, "Video fetched"));;
 });
 
 const updateVideo = asyncHandler(async (req, res) => {
@@ -96,12 +98,12 @@ const updateVideo = asyncHandler(async (req, res) => {
   let videoUpdated;
   console.log(desc);
   if (!videoId) {
-    return res.status(400).json({ alert: "please specify video Id" });
+    return res.status(400).json(new ApiResponse(400, {}, "Please specify videoId!"));
   }
   const videoFetched = await Video.findOne({ _id: new mongoose.Types.ObjectId(videoId) });
   console.log(videoFetched);
   if (!videoFetched) {
-    return res.status(404).json({ alert: "video not found!" });
+    return res.status(404).json(new ApiResponse(404, {}, "Video not found!"));;
   }
 
   if (req?.files?.thumbnail) {
@@ -110,7 +112,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     await deleteFromCloudnary(videoFetched.thumbnail_public_id, "image");
     await fs.unlink(thumbnailFileName);
     if (!thumbnailUpdated) {
-      return res.status(400).json({ alert: "Thumbnail wasn't updated" });
+      return res.status(400).json(new ApiResponse(400, {}, "Thumbnail was not updated!"));
     }
   }
 
@@ -120,7 +122,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     await deleteFromCloudnary(videoFetched.video_public_id, "video");
     await fs.unlink(videoFileName);
     if (!videoUpdated) {
-      return res.status(400).json({ alert: "Video wasn't updated" });
+      return res.status(400).json(new ApiResponse(400, {}, "Video wasn't updated!"));;
     }
   }
 
@@ -136,21 +138,21 @@ const updateVideo = asyncHandler(async (req, res) => {
 
   const VideoSaved = await Video.findByIdAndUpdate(videoId, videoUpdateData);
   if (!VideoSaved) {
-    return res.status(400).json({ alert: "video was not saved" });
+    return res.status(400).json(new ApiResponse(400, {}, "Video wasn't saved!"));
   }
 
-  return res.status(200).json({ message: "video updated successfully!" });
+  return res.status(200).json(new ApiResponse(200, {}, "Video updated successfully!")); S
 });
 
 const deleteVideo = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   //TODO: delete video
   if (!videoId) {
-    return res.status(404).json({ alert: "please specify video addr!" });
+    return res.status(404).json(new ApiResponse(404, {}, "Please specify video address!"));
   }
   const videoFetched = await Video.findById({ _id: videoId });
   if (!videoFetched) {
-    return res.status(404).json({ alert: "video not found!" });
+    return res.status(404).json(new ApiResponse(404, {}, "Video not found!"));
   }
   const videoRemovedCompletely = await Promise.all([
     deleteFromCloudnary(videoFetched.video_public_id, "video"),
@@ -165,19 +167,19 @@ const deleteVideo = asyncHandler(async (req, res) => {
   );
 
   if (!videoRemovedCompletely) {
-    return res.status(400).json({ alert: "error in deleting video!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Error in deleting video!"));
   }
-  return res.status(200).json({ message: "video deleted successfully!" });
+  return res.status(200).json(new ApiResponse(200, {}, "Video deleted successfully!"));
 });
 
 const togglePublishStatus = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
   if (!videoId) {
-    return res.status(404).json({ alert: "please specify video addr!" });
+    return res.status(404).json(new ApiResponse(404, {}, "Please specify video address!"));
   }
   const videoFetched = await Video.findById({ _id: videoId });
   if (!videoFetched) {
-    return res.status(404).json({ alert: "video not found!" });
+    return res.status(404).json(new ApiResponse(404, {}, "Video not found!"));
   }
 
   const videoPublishStatusToggled = videoFetched.isPublished
@@ -185,9 +187,16 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     : await Video.findByIdAndUpdate(videoFetched._id, { isPublished: true });
 
   if (!videoPublishStatusToggled) {
-    return res.status(400).json({ alert: "video status wasn't updated!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Video status wasn't updated!"));
   }
-  return res.status(200).json({ message: "video status updated successfully!" });
+  return res.status(200).json(new ApiResponse(200, {}, "Video status updated successfully!"));
 });
 
-export { updateVideo, deleteVideo, getAllVideos, getVideoById, publishAVideo, togglePublishStatus };
+export {
+  updateVideo,
+  deleteVideo,
+  getAllVideos,
+  getVideoById,
+  publishAVideo,
+  togglePublishStatus
+};

@@ -8,7 +8,7 @@ const createTweet = asyncHandler(async (req, res) => {
   //TODO: create tweet
   const { tweet_cont } = req.body;
   if (!tweet_cont) {
-    return res.status(400).json({ alert: "tweet is required!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Tweet is required!"));
   }
   const tweetData = {
     content: tweet_cont,
@@ -16,9 +16,9 @@ const createTweet = asyncHandler(async (req, res) => {
   };
   const tweetSaved = await Tweet.insertOne(tweetData);
   if (!tweetSaved) {
-    return res.status(400).json({ alert: "tweet not saved!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Tweet not saved!"));
   }
-  return res.status(201).json({ message: "Tweet saved!" });
+  return res.status(201).json(new ApiResponse(201, {}, "Tweet saved!"));
 });
 
 const getUserTweets = asyncHandler(async (req, res) => {
@@ -29,26 +29,26 @@ const getUserTweets = asyncHandler(async (req, res) => {
     .offset(offset)
     .limit(limit);
   if (!tweetsFetched) {
-    return res.status(400).json({ alert: "Something went wrong!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Something went wrong!"));
   }
-  return res.status(200).json({
-    message: "Tweets fetched!",
-    tweets: tweetsFetched,
-    currentPage: page,
-    totalPages: lastPage,
-    totalRecords: count
-  });
+  return res.status(200)
+    .json(new ApiResponse(200, {
+      tweets: tweetsFetched,
+      currentPage: page,
+      totalPages: lastPage,
+      totalRecords: count
+    }, "Tweets fetched!"));
 });
 
 const updateTweet = asyncHandler(async (req, res) => {
   //TODO: update tweet
   const { tweetId, tweet_cont } = req.body;
   if (!tweetId || !tweet_cont) {
-    return res.status(400).json({ alert: "Tweet data is required!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Tweet data is required!"));
   }
   const existingTweet = await Tweet.findOne({ _id: tweetId, owner: req.user._id });
   if (!existingTweet) {
-    return res.status(403).json({ alert: "Forbidden" });
+    return res.status(403).json(new ApiResponse(403, {}, "Forbidden"));
   }
 
   const tweetUpdatedData = {
@@ -56,21 +56,21 @@ const updateTweet = asyncHandler(async (req, res) => {
   };
   const tweetUpdated = await Tweet.findByIdAndUpdate(tweetId, tweetUpdatedData);
   if (!tweetUpdated) {
-    return res.status(400).json({ alert: "Tweet not updated!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Tweet not updated!"));
   }
-  return res.status(200).json({ message: "Tweet updated" });
+  return res.status(200).json(new ApiResponse(200, {}, "Tweet updated!"));
 });
 
 const deleteTweet = asyncHandler(async (req, res) => {
   const { tweetId } = req.body;
   if (!tweetId) {
-    return res.status(400).json({ alert: "Please specify tweet" });
+    return res.status(400).json(new ApiResponse(400, {}, "Please specify tweet!"));
   }
   const tweetDeleted = await Tweet.deleteOne({ _id: tweetId });
   if (!tweetDeleted) {
-    return res.status(400).json({ alert: "Tweet not deleted!" });
+    return res.status(400).json(new ApiResponse(400, {}, "Tweet not deleted!"));
   }
-  return res.status(200).json({ message: "Tweet deleted successfully!" });
+  return res.status(200).json(new ApiResponse(200, {}, "Tweet deleted successfully!"));
 });
 
 export {
