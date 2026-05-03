@@ -66,7 +66,7 @@ userSchema.methods.matchPassword = async function (password) {
 };
 
 userSchema.methods.generateAccessToken = async function (userID) {
-  const rawPrivateKey = await fs.readFile("./src/keys/private.pem", "utf-8");
+  const rawPrivateKey = await fs.readFile("C:/Users/.ssh/privateEDD.pem", "utf-8");
   const privateKeyCrypt = await importPKCS8(rawPrivateKey, "EdDSA");
   const accessToken = await new SignJWT({ id: userID.toString() })
     .setProtectedHeader({ alg: "EdDSA" })
@@ -77,7 +77,7 @@ userSchema.methods.generateAccessToken = async function (userID) {
 };
 
 userSchema.methods.generateRefreshToken = async function (userID) {
-  const rawPrivateKey = await fs.readFile("./src/keys/private.pem", "utf-8");
+  const rawPrivateKey = await fs.readFile("C:/Users/.ssh/privateEDD.pem", "utf-8");
   const privateKeyCrypt = await importPKCS8(rawPrivateKey, "EdDSA");
   const refreshToken = await new SignJWT({ id: userID.toString() })
     .setProtectedHeader({ alg: "EdDSA" })
