@@ -10,7 +10,7 @@ const authorizeUser = async (req, res, next) => {
     }
     const token = header.split(" ")[1];
     // console.log("token is: \n", token);
-    const rawPublicKey = await fs.readFile("C:/Users/.ssh/publicEDD.pem", "utf-8");
+    const rawPublicKey = await fs.readFile("C:/Users/Interne/.ssh/publicEDD.pem", "utf-8");
     const publicKeyCrypt = await importSPKI(rawPublicKey, "EdDSA");
     const tokenVerified = await jwtVerify(token, publicKeyCrypt);
     if (!tokenVerified) {
