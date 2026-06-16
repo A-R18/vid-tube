@@ -1,50 +1,50 @@
 {
-  "printWidth": 100,
-  "tabWidth": 2,
-  "useTabs": false,
+      "printWidth": 120,
+      "tabWidth": 6,
+      "useTabs": false,
 
-  "semi": true,
-  "singleQuote": false,
-  "doubleQuote": true,
-  "jsxSingleQuote": false,
-  "quoteProps": "as-needed",
+      "semi": true,
+      "singleQuote": false,
+      "doubleQuote": true,
+      "jsxSingleQuote": false,
+      "quoteProps": "as-needed",
 
-  "trailingComma": "es5",
-  "arrowParens": "always",
+      "trailingComma": "es5",
+      "arrowParens": "always",
 
-  "bracketSpacing": true,
-  "bracketSameLine": true,
+      "bracketSpacing": true,
+      "bracketSameLine": true,
 
-  "singleAttributePerLine": false,
+      "singleAttributePerLine": false,
 
-  "proseWrap": "preserve",
-  "htmlWhitespaceSensitivity": "css",
-  "embeddedLanguageFormatting": "auto",
+      "proseWrap": "preserve",
+      "htmlWhitespaceSensitivity": "css",
+      "embeddedLanguageFormatting": "auto",
 
-  "endOfLine": "lf",
+      "endOfLine": "lf",
 
-  "requirePragma": false,
-  "insertPragma": false,
+      "requirePragma": false,
+      "insertPragma": false,
 
-  "overrides": [
-    {
-      "files": "*.json",
-      "options": {
-        "printWidth": 120
-      }
-    },
-    {
-      "files": "*.md",
-      "options": {
-        "printWidth": 100,
-        "proseWrap": "preserve"
-      }
-    },
-    {
-      "files": ["*.yml", "*.yaml"],
-      "options": {
-        "singleQuote": false
-      }
-    }
-  ]
+      "overrides": [
+            {
+                  "files": "*.json",
+                  "options": {
+                        "printWidth": 120
+                  }
+            },
+            {
+                  "files": "*.md",
+                  "options": {
+                        "printWidth": 100,
+                        "proseWrap": "preserve"
+                  }
+            },
+            {
+                  "files": ["*.yml", "*.yaml"],
+                  "options": {
+                        "singleQuote": false
+                  }
+            }
+      ]
 }

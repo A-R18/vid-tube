@@ -14,10 +14,10 @@ import dashboardRoutes from "../src/routes/dashboard.route.js";
 import subscriptionRoutes from "../src/routes/subscription.route.js";
 
 app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN,
-    credentials: true,
-  })
+      cors({
+            origin: process.env.CORS_ORIGIN,
+            credentials: true,
+      })
 );
 
 app.use(express.json({ limit: "16kb" }));

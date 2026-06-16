@@ -2,12 +2,12 @@ import { Router } from "express";
 const router = Router();
 import { authorizeUser } from "../middleware/authorize.mid.js";
 import {
-  createPlaylist,
-  deletePlaylist,
-  getPlaylistById,
-  getUserPlaylists,
-  addVideoToPlaylist,
-  removeVideoFromPlaylist,
+      createPlaylist,
+      deletePlaylist,
+      getPlaylistById,
+      getUserPlaylists,
+      addVideoToPlaylist,
+      removeVideoFromPlaylist,
 } from "../controllers/playlist.controller.js";
 router.route("/create-playlist").post(authorizeUser, createPlaylist);
 router.route("/delete-playlist").post(authorizeUser, deletePlaylist);

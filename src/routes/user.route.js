@@ -1,33 +1,33 @@
 import { Router } from "express";
 import {
-  changeCurrentPassword,
-  updateUserCoverImage,
-  getUserWatchTimeData,
-  getUserChannelData,
-  updateAccDetails,
-  getCurrentUser,
-  updateAvatar,
-  logUserOut,
-  logUserIn,
-  regUser,
+      changeCurrentPassword,
+      updateUserCoverImage,
+      getUserWatchTimeData,
+      getUserChannelData,
+      updateAccDetails,
+      getCurrentUser,
+      updateAvatar,
+      logUserOut,
+      logUserIn,
+      regUser,
 } from "../controllers/user.controller.js";
 import { uploadFile } from "../middleware/fileUpload.mid.js";
 import { authorizeUser } from "../middleware/authorize.mid.js";
 const router = Router();
 router.route("/register").post(
-  authorizeUser,
-  uploadFile.fields([
-    {
-      name: "avatar",
-      maxCount: 1,
-    },
+      authorizeUser,
+      uploadFile.fields([
+            {
+                  name: "avatar",
+                  maxCount: 1,
+            },
 
-    {
-      name: "coverImage",
-      maxCount: 1,
-    },
-  ]),
-  regUser
+            {
+                  name: "coverImage",
+                  maxCount: 1,
+            },
+      ]),
+      regUser
 );
 
 router.route("/login").post(logUserIn);
@@ -38,8 +38,6 @@ router.route("/my-watchtime").get(authorizeUser, getUserWatchTimeData);
 router.route("/change-my-password").post(authorizeUser, changeCurrentPassword);
 router.route("/my-channel-data/:username").get(authorizeUser, getUserChannelData);
 router.route("/update-my-avatar").post(authorizeUser, uploadFile.single("avatar"), updateAvatar);
-router
-  .route("/update-video-cover")
-  .post(authorizeUser, uploadFile.single("coverImage"), updateUserCoverImage);
+router.route("/update-video-cover").post(authorizeUser, uploadFile.single("coverImage"), updateUserCoverImage);
 
 export default router;

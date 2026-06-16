@@ -3,21 +3,21 @@ import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 mongooseAggregatePaginate;
 
 const commentSchema = new Schema(
-  {
-    content: {
-      type: String,
-      required: true,
-    },
-    video: {
-      type: Schema.Types.ObjectId,
-      ref: "Video",
-    },
-    owner: {
-      type: Schema.Types.ObjectId,
-      ref: "Video",
-    },
-  },
-  { timestamps: true }
+      {
+            content: {
+                  type: String,
+                  required: true,
+            },
+            video: {
+                  type: Schema.Types.ObjectId,
+                  ref: "Video",
+            },
+            owner: {
+                  type: Schema.Types.ObjectId,
+                  ref: "Video",
+            },
+      },
+      { timestamps: true }
 );
 
 commentSchema.plugin(mongooseAggregatePaginate);
