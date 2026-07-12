@@ -2,7 +2,7 @@ import { ConnectionCreatedEvent } from "mongodb";
 import mongoose from "mongoose";
 const connectDataBase = async () => {
       try {
-            await mongoose.connect(process.env.DB_CONN);
+            await mongoose.connect(process.env.DB_CONN||"dbstring");
             console.log(`DB connected!`);
       } catch (error) {
             console.log(`error: \n ${error.message}\n stackTrace: ${error.stack}`);
